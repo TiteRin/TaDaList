@@ -10,6 +10,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test": "vitest --run",
+    "test:ci": "vitest --run --environment node",
     "test:watch": "vitest"
   },
   "dependencies": {
