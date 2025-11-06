@@ -1,65 +1,98 @@
-import Image from "next/image";
-
 export default function Home() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    return (
+        <div className="lg:border-base-content/5 mb-16 rounded-2xl lg:border lg:p-4">
+            <div className="border-base-content/10 overflow-hidden rounded-lg border-[0.5px]">
+                <div className="grid grid-cols-1">
+                    <div
+                        className="bg-primary text-primary-content group border-base-content/10 grid h-24 place-content-end gap-1 p-6 text-end">
+                        <div
+                            className="font-title translate-y-1 text-sm font-semibold tracking-widest opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100">Primary
+                        </div>
+                        <div className="font-mono text-[0.625rem] tracking-widest tabular-nums">#55828B</div>
+                    </div>
+                    <div
+                        className="bg-secondary text-secondary-content group border-base-content/10 grid h-24 place-content-end gap-1 p-6 text-end">
+                        <div
+                            className="font-title translate-y-1 text-sm font-semibold tracking-widest opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100">Secondary
+                        </div>
+                        <div className="font-mono text-[0.625rem] tracking-widest tabular-nums">#BDD358</div>
+                    </div>
+                    <div
+                        className="bg-accent text-accent-content group border-base-content/10 grid h-24 place-content-end gap-1 p-6 text-end">
+                        <div
+                            className="font-title translate-y-1 text-sm font-semibold tracking-widest opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100">Accent
+                        </div>
+                        <div className="font-mono text-[0.625rem] tracking-widest tabular-nums">#E5E059</div>
+                    </div>
+                    <div
+                        className="bg-neutral text-neutral-content group border-base-content/10 grid h-24 place-content-end gap-1 p-6 text-end">
+                        <div
+                            className="font-title translate-y-1 text-sm font-semibold tracking-widest opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100">Neutral
+                        </div>
+                        <div className="font-mono text-[0.625rem] tracking-widest tabular-nums">#303036</div>
+                    </div>
+                </div>
+            </div>
+            <div className="border-base-content/10 mt-4 overflow-hidden rounded-lg border-[0.5px]">
+                <div className="grid xl:grid-cols-3">
+                    <div
+                        className="bg-base-100 text-base-content group border-base-content/10 grid h-36 place-content-end gap-1 p-6 text-end">
+                        <div
+                            className="font-title translate-y-1 text-sm font-semibold tracking-widest opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100">Base
+                            100
+                        </div>
+                        <div className="font-mono text-[0.625rem] tracking-widest tabular-nums">#F5F5F5</div>
+                    </div>
+                    <div
+                        className="bg-base-200 text-base-content group border-base-content/10 grid h-36 place-content-end gap-1 p-6 text-end">
+                        <div
+                            className="font-title translate-y-1 text-sm font-semibold tracking-widest opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100">Base
+                            200
+                        </div>
+                        <div className="font-mono text-[0.625rem] tracking-widest tabular-nums">#EAEAEA</div>
+                    </div>
+                    <div
+                        className="bg-base-300 text-base-content group border-base-content/10 grid h-36 place-content-end gap-1 p-6 text-end">
+                        <div
+                            className="font-title translate-y-1 text-sm font-semibold tracking-widest opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100">Base
+                            300
+                        </div>
+                        <div className="font-mono text-[0.625rem] tracking-widest tabular-nums">#DADADA</div>
+                    </div>
+                </div>
+            </div>
+            <div className="border-base-content/10 mt-4 overflow-hidden rounded-lg border-[0.5px]">
+                <div className="grid xl:grid-cols-4">
+                    <div
+                        className="bg-info text-info-content group border-base-content/10 grid h-24 place-content-end gap-1 p-6 text-end">
+                        <div
+                            className="font-title translate-y-1 text-sm font-semibold tracking-widest opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100">Info
+                        </div>
+                        <div className="font-mono text-[0.625rem] tracking-widest tabular-nums">#4A90E2</div>
+                    </div>
+                    <div
+                        className="bg-success text-success-content group border-base-content/10 grid h-24 place-content-end gap-1 p-6 text-end">
+                        <div
+                            className="font-title translate-y-1 text-sm font-semibold tracking-widest opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100">Success
+                        </div>
+                        <div className="font-mono text-[0.625rem] tracking-widest tabular-nums">#7FB069</div>
+                    </div>
+                    <div
+                        className="bg-warning text-warning-content group border-base-content/10 grid h-24 place-content-end gap-1 p-6 text-end">
+                        <div
+                            className="font-title translate-y-1 text-sm font-semibold tracking-widest opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100">Warning
+                        </div>
+                        <div className="font-mono text-[0.625rem] tracking-widest tabular-nums">#E6B800</div>
+                    </div>
+                    <div
+                        className="bg-error text-error-content group border-base-content/10 grid h-24 place-content-end gap-1 p-6 text-end">
+                        <div
+                            className="font-title translate-y-1 text-sm font-semibold tracking-widest opacity-0 transition-all group-hover:translate-y-0 group-hover:opacity-100">Error
+                        </div>
+                        <div className="font-mono text-[0.625rem] tracking-widest tabular-nums">#D94E41</div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+    );
 }
