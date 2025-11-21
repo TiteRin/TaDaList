@@ -15,16 +15,18 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String     @id
   name          String
   email         String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean    @default(false)
   image         String?
-  language      String    @default("en")
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now()) @updatedAt
+  language      String     @default("en")
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @default(now()) @updatedAt
   sessions      Session[]
   accounts      Account[]
+  tasks         Task[]
+  doneTasks     DoneTask[]
 
   @@unique([email])
   @@map("user")
@@ -73,4 +75,29 @@ model Verification {
   updatedAt  DateTime @default(now()) @updatedAt
 
   @@map("verification")
+}
+
+model Task {
+  id        String   @id @default(cuid())
+  name      String
+  userId    String? // null = tâche globale
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  doneTasks DoneTask[]
+
+  @@unique([userId, name])
+  @@index([userId, name])
+}
+
+model DoneTask {
+  id     String   @id @default(cuid())
+  taskId String
+  task   Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId String
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  doneAt DateTime @default(now())
+
+  @@index([taskId, userId, doneAt])
 }
