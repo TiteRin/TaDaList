@@ -92,4 +92,35 @@ describe("TaskInput Component", () => {
 
         expect(input).toHaveValue("");
     });
+
+    it('cliquer sur une suggestion appelle logTask', async () => {
+
+        // Approach
+        (api.suggestTasks as any).mockResolvedValue([
+            {id: "task-1", name: "showered", source: "user"},
+        ]);
+        (api.logTask as any).mockResolvedValue({
+                taskId: "task-1",
+                taskName: "showered",
+                doneTaskId: "done-1",
+            }
+        );
+
+        renderWithClient(<TaskInput/>);
+        const input = screen.getByPlaceholderText(/type what you did/i);
+
+        // Action
+        fireEvent.focus(input);
+        fireEvent.change(input, {target: {value: "sho"}});
+
+        const suggestion = await screen.findByText("showered");
+        fireEvent.click(suggestion);
+
+        // Assert
+        await waitFor(() => {
+            expect(api.logTask).toHaveBeenCalledWith(expect.objectContaining({name: "showered"}));
+        });
+
+        expect(input).toHaveValue("");
+    });
 })

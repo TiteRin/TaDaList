@@ -1,7 +1,7 @@
 'use client';
 
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {logTask, suggestTasks} from "@/lib/api/tasks";
+import {logTask, LogTaskPayload, suggestTasks} from "@/lib/api/tasks";
 import {useState} from "react";
 
 export default function TaskInput() {
@@ -17,21 +17,29 @@ export default function TaskInput() {
     });
 
     const mutation = useMutation({
-        mutationFn: (taskName: string) => logTask({name: taskName, doneAt: new Date()})
+        mutationFn: (payload: LogTaskPayload) => logTask(payload),
+        onSuccess: () => {
+            setTaskName("");
+            queryClient.invalidateQueries({queryKey: ["tasks"]})
+            queryClient.invalidateQueries({queryKey: ["suggestions"]})
+        }
     });
 
     const showSuggestion = isFocused && suggestions.length > 0;
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        mutation.mutate(taskName);
-        setTaskName("");
+        mutation.mutate({name: taskName});
     }
 
     const handleKeydown = (e: React.KeyboardEvent) => {
         if (e.key === "Enter") {
             handleSubmit(e);
         }
+    }
+
+    const handleSuggestionClick = (suggestion: string) => {
+        mutation.mutate({name: suggestion});
     }
 
     return (
@@ -47,7 +55,8 @@ export default function TaskInput() {
             {showSuggestion && (
                 <ul>
                     {suggestions.map(suggestion => (
-                        <li key={suggestion.id}>{suggestion.name}</li>
+                        <li key={suggestion.id}
+                            onClick={() => handleSuggestionClick(suggestion.name)}>{suggestion.name}</li>
                     ))}
                 </ul>
             )}
