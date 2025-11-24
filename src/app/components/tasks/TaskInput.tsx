@@ -50,14 +50,14 @@ export default function TaskInput() {
                    onChange={(e) => setTaskName(e.target.value)}
                    onKeyDown={handleKeydown}
                    onFocus={() => setIsFocused(true)}
-                   onBlur={() => setIsFocused(false)}
+                   onBlur={() => setTimeout(() => setIsFocused(false), 300)}
                    value={taskName}
                    className="input input-bordered w-full"
             />
             {showSuggestion && (
-                <ul>
+                <ul className="">
                     {suggestions.map(suggestion => (
-                        <li key={suggestion.id}
+                        <li key={suggestion.id} className="cursor-pointer hover:bg-primary badge-xl badge badge-soft badge-secondary m-2"
                             onClick={() => handleSuggestionClick(suggestion.name)}>{suggestion.name}</li>
                     ))}
                 </ul>
