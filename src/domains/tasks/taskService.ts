@@ -83,13 +83,25 @@ export function createTaskService(prisma: PrismaClient): TaskService {
             take: limit
         });
 
-        if (tasks.length > 0) {
-            return tasks.map(task => ({id: task.id, name: task.name, source: "user"}));
+        const suggestions = tasks.map((task: Task): TaskSuggestion => ({
+            id: task.id,
+            name: task.name,
+            source: "user"
+        }));
+
+        if (suggestions.length === limit) {
+            return suggestions;
         }
 
-        return DEFAULT_TASKS.filter((task) => {
-            return task.startsWith(sanitizedSearchTerm);
-        }).map(task => ({id: null, name: task, source: "global"}));
+        return [
+            ...suggestions,
+            ...DEFAULT_TASKS
+                .filter((task) => (
+                    task.startsWith(sanitizedSearchTerm)
+                )).map((task: string): TaskSuggestion => (
+                    {id: null, name: task, source: "global"}
+                ))
+        ].slice(0, limit);
 
     }
 

@@ -122,7 +122,8 @@ describe("TaskService", function () {
                 {id: "task-1", name: "ate something", userId, createdAt: now, updatedAt: now},
                 {id: "task-2", name: "ate something healthy", userId, createdAt: now, updatedAt: now},
                 {id: "task-3", name: "ate outside", userId, createdAt: now, updatedAt: now},
-                {id: "task-4", name: "ate vegetables", userId, createdAt: now, updatedAt: now}
+                {id: "task-4", name: "ate vegetables", userId, createdAt: now, updatedAt: now},
+                {id: "task-5", name: "ate with my friends", userId, createdAt: now, updatedAt: now},
             ]);
 
             // Action
@@ -137,11 +138,12 @@ describe("TaskService", function () {
                 take: 5
             });
 
-            expect(suggestions).toHaveLength(4);
+            expect(suggestions).toHaveLength(5);
             expect(suggestions).toContainEqual({id: "task-1", name: "ate something", source: "user"});
             expect(suggestions).toContainEqual({id: "task-2", name: "ate something healthy", source: "user"});
             expect(suggestions).toContainEqual({id: "task-3", name: "ate outside", source: "user"});
             expect(suggestions).toContainEqual({id: "task-4", name: "ate vegetables", source: "user"});
+            expect(suggestions).toContainEqual({id: "task-5", name: "ate with my friends", source: "user"});
         });
 
         it("complète avec les tâches par défaut si besoin", async () => {
@@ -175,7 +177,7 @@ describe("TaskService", function () {
             const playedSuggestions = suggestions.filter(task => task.name.includes("played"));
 
             // Assert
-            expect(playedSuggestions).toHaveLength(1);
+            expect(playedSuggestions).toHaveLength(5);
             expect(playedSuggestions[0].source).toBe("user");
         });
     });
