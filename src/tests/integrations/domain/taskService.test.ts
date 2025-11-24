@@ -112,4 +112,37 @@ describe("TaskService", function () {
             expect(result.taskName).toBe("showered");
         });
     });
+
+    describe("suggestTasks", () => {
+
+        it("retourne les tâches utilisateurs qui matchent la recherche", async () => {
+
+            // Approach
+            prismaMock.task.findMany.mockResolvedValue([
+                {id: "task-1", name: "ate something", userId, createdAt: now, updatedAt: now},
+                {id: "task-2", name: "ate something healthy", userId, createdAt: now, updatedAt: now},
+                {id: "task-3", name: "ate outside", userId, createdAt: now, updatedAt: now},
+                {id: "task-4", name: "ate vegetables", userId, createdAt: now, updatedAt: now}
+            ]);
+
+            // Action
+            const suggestions = await service.suggestTasks(userId, "ate", 5);
+
+            // Assert
+            expect(prismaMock.task.findMany).toHaveBeenCalledWith({
+                where: {
+                    userId,
+                    name: {startsWith: "ate", mode: "insensitive"}
+                },
+                take: 5
+            });
+
+            expect(suggestions).toHaveLength(4);
+            expect(suggestions).toContainEqual({id: "task-1", name: "ate something", source: "user"});
+            expect(suggestions).toContainEqual({id: "task-2", name: "ate something healthy", source: "user"});
+            expect(suggestions).toContainEqual({id: "task-3", name: "ate outside", source: "user"});
+            expect(suggestions).toContainEqual({id: "task-4", name: "ate vegetables", source: "user"});
+
+        });
+    });
 })
