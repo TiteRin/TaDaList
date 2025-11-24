@@ -142,7 +142,41 @@ describe("TaskService", function () {
             expect(suggestions).toContainEqual({id: "task-2", name: "ate something healthy", source: "user"});
             expect(suggestions).toContainEqual({id: "task-3", name: "ate outside", source: "user"});
             expect(suggestions).toContainEqual({id: "task-4", name: "ate vegetables", source: "user"});
+        });
 
+        it("complète avec les tâches par défaut si besoin", async () => {
+            // Approach
+            prismaMock.task.findMany.mockResolvedValue([]);
+
+            // Action
+            const suggestions = await service.suggestTasks(userId, "played", 5);
+            const defaultTask = suggestions.find(task => task.name.includes("played"));
+
+            // Assert
+            expect(suggestions.length).toBeGreaterThan(0);
+            expect(defaultTask).toBeDefined();
+
+            expect(defaultTask).toEqual({
+                id: null,
+                name: defaultTask!.name,
+                source: "global"
+            })
+        });
+
+        it('évite les doublons entre les tâches utilisateurs et les tâches globales', async () => {
+
+            // Approach
+            prismaMock.task.findMany.mockResolvedValue([
+                {id: "task-1", name: "played guitar", userId, createdAt: now, updatedAt: now},
+            ]);
+
+            // Action
+            const suggestions = await service.suggestTasks(userId, "played", 5);
+            const playedSuggestions = suggestions.filter(task => task.name.includes("played"));
+
+            // Assert
+            expect(playedSuggestions).toHaveLength(1);
+            expect(playedSuggestions[0].source).toBe("user");
         });
     });
 })

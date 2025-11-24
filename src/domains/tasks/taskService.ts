@@ -1,4 +1,5 @@
 import {PrismaClient, Task} from "@/generated/prisma/client";
+import {DEFAULT_TASKS} from "@/config/defaultTasks";
 
 export interface TaskService {
     logTask: (input: LogTaskInput) => Promise<LoggedTask>,
@@ -19,7 +20,7 @@ export interface LoggedTask {
 }
 
 export interface TaskSuggestion {
-    id: string,
+    id: string | null,
     name: string,
     source: "user" | "global"
 }
@@ -82,7 +83,14 @@ export function createTaskService(prisma: PrismaClient): TaskService {
             take: limit
         });
 
-        return tasks.map(task => ({id: task.id, name: task.name, source: "user"}));
+        if (tasks.length > 0) {
+            return tasks.map(task => ({id: task.id, name: task.name, source: "user"}));
+        }
+
+        return DEFAULT_TASKS.filter((task) => {
+            return task.startsWith(sanitizedSearchTerm);
+        }).map(task => ({id: null, name: task, source: "global"}));
+
     }
 
     return {
