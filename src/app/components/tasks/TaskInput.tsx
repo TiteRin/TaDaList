@@ -43,7 +43,8 @@ export default function TaskInput() {
     }
 
     return (
-        <div>
+        <fieldset className="fieldset">
+            <legend className={"fieldset-legend"}>What did you do today?</legend>
             <input type="text"
                    placeholder="Type what you did"
                    onChange={(e) => setTaskName(e.target.value)}
@@ -51,6 +52,7 @@ export default function TaskInput() {
                    onFocus={() => setIsFocused(true)}
                    onBlur={() => setIsFocused(false)}
                    value={taskName}
+                   className="input input-bordered w-full"
             />
             {showSuggestion && (
                 <ul>
@@ -60,6 +62,6 @@ export default function TaskInput() {
                     ))}
                 </ul>
             )}
-        </div>
+        </fieldset>
     )
 }
