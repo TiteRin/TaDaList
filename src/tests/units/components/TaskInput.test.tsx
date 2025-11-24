@@ -44,4 +44,27 @@ describe("TaskInput Component", () => {
         // Assert
         expect(screen.getByPlaceholderText(/type what you did/i)).toBeInTheDocument();
     });
+
+    it('appelle suggestTasks quand on tape', async () => {
+
+        // Approach
+        (api.suggestTasks as any).mockResolvedValue([
+            {id: "task-1", name: "showered", source: "user"},
+            {id: "task-2", name: "shoveled the snow", source: "user"}
+        ]);
+
+        // Action
+        renderWithClient(<TaskInput />)
+        const input = screen.getByPlaceholderText(/type what you did/i);
+
+        fireEvent.focus(input);
+        fireEvent.change(input, {target: {value: "sho"}});
+
+        // Assert
+        await waitFor(() => {
+            expect(api.suggestTasks).toHaveBeenCalledWith("sho")
+        });
+        expect(await screen.findByText("showered")).toBeInTheDocument();
+        expect(await screen.findByText("shoveled the snow")).toBeInTheDocument();
+    });
 })
