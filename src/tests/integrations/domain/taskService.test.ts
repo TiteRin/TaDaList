@@ -88,5 +88,28 @@ describe("TaskService", function () {
 
             expect(result.taskId).toBe(existingTask.id);
         });
+
+
+        it("normalize le nom de la tâche avant d’effectuer les actions en base de données", async () => {
+
+            // Approach
+            prismaMock.task.findFirst.mockResolvedValue(null);
+            prismaMock.task.create.mockResolvedValue({
+                id: "task-1",
+                name: "showered",
+                userId,
+                createdAt: now,
+                updatedAt: now
+            });
+            prismaMock.doneTask.create.mockResolvedValue({id: "done-1", taskId: "task-1", userId, doneAt: now});
+
+            // Action
+            const result = await service.logTask({userId, name: "  showered  ", doneAt: now});
+
+            // Assert
+            expect(prismaMock.task.findFirst).toHaveBeenCalledWith({where: {userId, name: "showered"}});
+            expect(prismaMock.task.create).toHaveBeenCalledWith({data: {userId, name: "showered"}});
+            expect(result.taskName).toBe("showered");
+        });
     });
 })
