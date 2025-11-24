@@ -55,5 +55,38 @@ describe("TaskService", function () {
                 doneAt: now
             });
         });
+
+
+        it('réutilise la tâche lorsque celle-ci existe déjà pour cet utilisateur', async function () {
+            // Setup
+            const existingTask = {
+                id: 'existing-task-id',
+                name: 'ran errands',
+                userId,
+                createdAt: now,
+                updatedAt: now
+            };
+
+            prismaMock.task.findFirst.mockResolvedValue(existingTask);
+
+            // Approach
+            prismaMock.doneTask.create.mockResolvedValue({
+                id: 'done-1',
+                taskId: existingTask.id,
+                userId,
+                doneAt: now
+            });
+
+            // Action
+            const result = await service.logTask({userId, name: 'ran errands', doneAt: now});
+
+            // Assert
+            expect(prismaMock.task.create).not.toHaveBeenCalled();
+            expect(prismaMock.doneTask.create).toHaveBeenCalledWith({
+                data: {taskId: existingTask.id, userId, doneAt: now}
+            });
+
+            expect(result.taskId).toBe(existingTask.id);
+        });
     });
 })
