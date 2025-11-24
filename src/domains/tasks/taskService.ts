@@ -1,5 +1,6 @@
 import {PrismaClient, Task} from "@/generated/prisma/client";
 import {DEFAULT_TASKS} from "@/config/defaultTasks";
+import {TaskWhereInput} from "@/generated/prisma/models/Task";
 
 export interface TaskService {
     logTask: (input: LogTaskInput) => Promise<LoggedTask>,
@@ -72,13 +73,19 @@ export function createTaskService(prisma: PrismaClient): TaskService {
     async function suggestTasks(userId: string, searchTerm: string, limit: number = 5): Promise<TaskSuggestion[]> {
         const sanitizedSearchTerm = searchTerm.trim();
 
+        const where: TaskWhereInput = {userId};
+
+        if (sanitizedSearchTerm) {
+            where.name = {
+                startsWith: sanitizedSearchTerm,
+                mode: "insensitive"
+            };
+        }
+
         const tasks = await prisma.task.findMany({
-            where: {
-                name: {
-                    startsWith: sanitizedSearchTerm,
-                    mode: "insensitive"
-                },
-                userId
+            where,
+            orderBy: {
+                updatedAt: "desc"
             },
             take: limit
         });

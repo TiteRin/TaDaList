@@ -135,6 +135,7 @@ describe("TaskService", function () {
                     userId,
                     name: {startsWith: "ate", mode: "insensitive"}
                 },
+                orderBy: {updatedAt: "desc"},
                 take: 5
             });
 
@@ -179,6 +180,29 @@ describe("TaskService", function () {
             // Assert
             expect(playedSuggestions).toHaveLength(5);
             expect(playedSuggestions[0].source).toBe("user");
+        });
+
+        it('si la query est vide, retourner les tâches récentes', async () => {
+
+            // Approach
+            const oldDate = new Date("2025-10-23T00:00:00.000Z");
+            prismaMock.task.findMany.mockResolvedValue([
+                {id: 'u_recent', name: 'recent task', userId, createdAt: now, updatedAt: now},
+                {id: 'u_old', name: 'old task', userId, createdAt: oldDate, updatedAt: oldDate}
+            ])
+
+            // Action
+            const suggestions = await service.suggestTasks(userId, "", 5);
+
+            // Assert
+            expect(prismaMock.task.findMany).toHaveBeenCalledWith({
+                where: {userId},
+                orderBy: {updatedAt: 'desc'},
+                take: 5
+            });
+
+            expect(suggestions[0].name).toBe("recent task");
+            expect(suggestions[1].name).toBe("old task");
         });
     });
 })
