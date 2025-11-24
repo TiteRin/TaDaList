@@ -1,6 +1,7 @@
 import {PrismaClient, Task} from "@/generated/prisma/client";
 import {DEFAULT_TASKS} from "@/config/defaultTasks";
 import {TaskWhereInput} from "@/generated/prisma/models/Task";
+import prisma from "@/lib/prisma";
 
 export interface TaskService {
     logTask: (input: LogTaskInput) => Promise<LoggedTask>,
@@ -117,3 +118,6 @@ export function createTaskService(prisma: PrismaClient): TaskService {
         suggestTasks
     }
 }
+
+const taskService = createTaskService(prisma);
+export default taskService;
