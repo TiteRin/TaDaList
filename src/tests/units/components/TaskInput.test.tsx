@@ -54,7 +54,7 @@ describe("TaskInput Component", () => {
         ]);
 
         // Action
-        renderWithClient(<TaskInput />)
+        renderWithClient(<TaskInput/>);
         const input = screen.getByPlaceholderText(/type what you did/i);
 
         fireEvent.focus(input);
@@ -66,5 +66,30 @@ describe("TaskInput Component", () => {
         });
         expect(await screen.findByText("showered")).toBeInTheDocument();
         expect(await screen.findByText("shoveled the snow")).toBeInTheDocument();
+    });
+
+    it('appuyer sur Entrée dans l’input appelle logTask avec le texte saisi', async () => {
+
+        // Approach
+        (api.logTask as any).mockResolvedValue({
+            taskId: "task-1",
+            taskName: "showered",
+            doneTaskId: "done-1",
+            doneAt: new Date()
+        });
+
+        // Action
+        renderWithClient(<TaskInput/>);
+        const input = screen.getByPlaceholderText(/type what you did/i);
+
+        fireEvent.change(input, {target: {value: "ate a fancy meal"}});
+        fireEvent.keyDown(input, {key: "Enter", code: "Enter"});
+
+        // Assert
+        await waitFor(() => {
+            expect(api.logTask).toHaveBeenCalledWith(expect.objectContaining({name: "ate a fancy meal"}));
+        });
+
+        expect(input).toHaveValue("");
     });
 })
