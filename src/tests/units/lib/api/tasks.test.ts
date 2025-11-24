@@ -54,10 +54,17 @@ describe('API Client: tasks', () => {
         it('appelle GET /api/tasks/suggestions avec le paramètre de recherche', async () => {
 
             // Approach
+            fetchMock.mockResolvedValue({
+                    ok: true,
+                    json: () => Promise.resolve([])
+                }
+            )
 
             // Action
+            await suggestTasks("sho");
 
             // Assert
+            expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining("/api/tasks/suggestions?q=sho"));
         });
     });
 });
