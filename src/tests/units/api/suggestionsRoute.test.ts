@@ -72,4 +72,20 @@ describe("GET /api/tasks/suggestions", () => {
         expect(taskService.suggestTasks).toHaveBeenCalledWith(userId, "sho");
         expect(data).toEqual(mockSuggestions);
     });
+
+    it('gère une query vide', async () => {
+
+        // Approach
+        const userId = "user-123";
+        (auth.api.getSession as any).mockResolvedValue({user: {id: userId}});
+        (taskService.suggestTasks as any).mockResolvedValue([]);
+
+        const request = new NextRequest('http://localhost:3000/api/tasks/suggestions?q=');
+
+        // Action
+        await GET(request);
+
+        // Assert
+        expect(taskService.suggestTasks).toHaveBeenCalledWith(userId, "");
+    });
 });
