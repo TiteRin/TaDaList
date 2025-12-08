@@ -59,5 +59,18 @@ describe("typeText", () => {
 
 
         expect(() => deleteTo("hi", get, set, () => false, { min: 1, max: 1})).rejects.toThrowError();
-    })
+    });
+
+    test("stops when aborted", async () => {
+        let text = "";
+        const set = (t: string) => (text = t);
+
+        const abort = () => true;
+
+        const p = typeText("hello", set, abort, { min: 1, max: 1 });
+
+        await p;
+
+        expect(text).toBe(""); // nothing typed
+    });
 });

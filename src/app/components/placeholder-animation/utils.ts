@@ -47,6 +47,7 @@ export async function typeText(
         max: 120
     }) {
     for (let i = 0; i < target.length; i++) {
+        if (abort()) return;
         set(target.slice(0, i + 1));
         await wait(randomDelay(speedRange.min, speedRange.max));
     }
