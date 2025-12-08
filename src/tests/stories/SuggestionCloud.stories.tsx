@@ -1,6 +1,7 @@
 import type {Meta, StoryObj} from '@storybook/react';
 import SuggestionCloud from "@/app/components/SuggestionCloud";
 import {TaskSuggestion} from "@/domains/tasks/taskService";
+import {useMemo, useState} from "react";
 
 const meta: Meta<typeof SuggestionCloud> = {
     title: "Components/SuggestionCloud",
@@ -28,9 +29,60 @@ export const Default: Story = {
     args: {
         onSelect: (taskName: string) => {
             console.log(`Selected ${taskName}`);
-
-
         },
         suggestions
     }
 };
+
+function StatefulWrapper() {
+
+    const POP_MS = 420; // keep in sync with .animate-pop-bubble
+    const BUFFER_MS = 50; // safety margin
+
+    const [items, setItems] = useState<TaskSuggestion[]>(suggestions);
+
+    const keyOf = (item: TaskSuggestion) => item.id ?? `global:${item.name}`;
+
+    const removeByKey = (key: string) => {
+        setItems(curr => curr.filter(s => keyOf(s) !== key));
+    }
+
+    const removeRandom = () => {
+        setItems(curr => {
+            if (curr.length === 0) return curr;
+
+            const i = Math.floor(Math.random() * curr.length);
+            return curr.filter((_, index) => index !== i);
+        });
+    }
+
+    const reset = () => setItems(suggestions);
+
+    const onSelect = (taskName: string) => {
+        setTimeout(
+            () => setItems(curr => curr.filter(s => s.name !== taskName)),
+            POP_MS + BUFFER_MS
+        );
+    }
+
+    const keys = useMemo(() => items.map(keyOf), [items]);
+
+    return (
+        <div className="flex flex-col gap-4 items-center">
+            <div className="flex gap-2">
+                <button className="btn btn-secondary btn-soft" onClick={removeRandom} disabled={items.length === 0}>
+                    Remove random
+                </button>
+                <button className="btn" onClick={reset}>
+                    Reset
+                </button>
+            </div>
+            <SuggestionCloud suggestions={items} onSelect={onSelect}/>
+            <div className="text-xs opacity-60">Keys: {keys.join(", ")}</div>
+        </div>
+    );
+}
+
+export const RemovalsDemo: Story = {
+    render: () => <StatefulWrapper/>
+}

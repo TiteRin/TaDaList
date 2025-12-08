@@ -1,5 +1,6 @@
 import type {Metadata} from "next";
 import "./globals.css";
+import "./styles/animations.scss";
 import React from "react";
 
 export const metadata: Metadata = {

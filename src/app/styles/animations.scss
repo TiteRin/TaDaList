@@ -1,0 +1,162 @@
+/* Global animation utilities for SuggestionCloud and related UI */
+
+/* --- Custom UI animations & effects --- */
+
+/* Hover strikethrough: draws from left to right */
+.strike-animate .strike-text {
+  position: relative;
+}
+.strike-animate .strike-text::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 2px;
+  width: 0;
+  background: currentColor;
+  transform: translateY(-50%);
+  transition: width 180ms ease;
+  opacity: 0.85;
+  pointer-events: none;
+}
+.strike-animate:hover .strike-text::after {
+  width: 100%;
+}
+
+  /* Selected "pop like a bubble" effect (with pre-pop zoom) */
+@keyframes pop-bubble {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    20% {
+      transform: scale(1.25);
+    }
+    45% {
+      transform: scale(0.92);
+    }
+    100% {
+      transform: scale(0);
+      opacity: 0;
+    }
+}
+.animate-pop-bubble {
+    animation: pop-bubble 420ms cubic-bezier(.2,.8,.3,1) forwards;
+    will-change: transform, opacity;
+}
+
+  /* Sparkle/Glitter burst accompanying the pop */
+@keyframes sparkle-burst {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.6) rotate(0deg);
+    }
+    25% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(1.6) rotate(35deg);
+    }
+}
+
+  /* Attach to the button; draws 8 small sparks around it using box-shadows */
+.animate-sparkle-burst {
+  position: relative;
+}
+.animate-sparkle-burst::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  /* eight spokes */
+  box-shadow:
+    0 -18px 0 0 currentColor,
+    12.7px -12.7px 0 0 currentColor,
+    18px 0 0 0 currentColor,
+    12.7px 12.7px 0 0 currentColor,
+    0 18px 0 0 currentColor,
+    -12.7px 12.7px 0 0 currentColor,
+    -18px 0 0 0 currentColor,
+    -12.7px -12.7px 0 0 currentColor;
+  filter: drop-shadow(0 0 4px currentColor);
+  opacity: 0;
+  animation: sparkle-burst 420ms ease-out forwards;
+}
+
+/* Explicit visual hide to bridge pop end → exit start without flash */
+.pop-hidden {
+  opacity: 0 !important;
+  transform: scale(0) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .strike-animate .strike-text::after {
+    transition: none;
+  }
+  .animate-pop-bubble {
+    animation: none;
+  }
+  .animate-sparkle-burst::after {
+    animation: none;
+    content: none;
+  }
+}
+
+/* --- Exit/Enter animations for SuggestionCloud item removal/addition --- */
+@keyframes badge-enter {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Layout-collapsing exit: reduces only max-size so space shrinks before unmount.
+   Important: Avoid animating padding/margins to reduce layout churn. We zero them
+   immediately in the class while only animating max-* for a snappier feel.
+   Also: Do NOT animate opacity/transform here so items that just finished the pop
+   animation don't visually reappear when exit starts. */
+@keyframes badge-exit {
+  0% {
+    max-width: 24rem;
+    max-height: 4rem;
+  }
+  100% {
+    max-width: 0;
+    max-height: 0;
+  }
+}
+
+.animate-badge-enter {
+  animation: badge-enter 160ms ease-out both;
+  will-change: transform, opacity;
+}
+
+.animate-badge-exit {
+  /* Snappier exit: only animate max-* and zero padding/margins immediately */
+  animation: badge-exit 280ms cubic-bezier(.2,.8,.2,1) forwards;
+  overflow: hidden; /* required to visually collapse content */
+  padding: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  /* Reduce reflow impact to nearby layout */
+  contain: layout;
+  will-change: max-width, max-height;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-badge-enter,
+  .animate-badge-exit {
+    animation: none !important;
+  }
+}
