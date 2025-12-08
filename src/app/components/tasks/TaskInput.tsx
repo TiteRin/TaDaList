@@ -2,8 +2,7 @@
 
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {logTask, LogTaskPayload, suggestTasks} from "@/lib/api/tasks";
-import {useEffect, useState} from "react";
-import SuggestionCloud from "@/app/components/SuggestionCloud";
+import {useState} from "react";
 import {clsx} from "clsx";
 import {useDebounced} from "@/app/hooks/useDebounced";
 
@@ -17,7 +16,7 @@ export default function TaskInput() {
     const [activeIndex, setActiveIndex] = useState<number>(-1);
     const listBoxId = "task-suggestions";
 
-    const {data: suggestions = []} = useQuery({
+    const {data: suggestions = [], isFetching} = useQuery({
         queryKey: ["suggestions", debouncedTaskName],
         queryFn: () => suggestTasks(debouncedTaskName),
         placeholderData: (previousData) => previousData,
@@ -70,45 +69,54 @@ export default function TaskInput() {
     return (
         <fieldset className="fieldset">
             <legend className={"fieldset-legend"}>What did you do today?</legend>
-            <input type="text"
-                   placeholder="Type what you did"
-                   onChange={(e) => setTaskName(e.target.value)}
-                   onKeyDown={handleKeydown}
-                   onFocus={() => setIsFocused(true)}
-                   onBlur={() => setTimeout(() => setIsFocused(false), 300)}
-                   value={taskName}
-                   className="input input-bordered w-full"
-                   role="combobox"
-                   aria-autocomplete="list"
-                   aria-controls={listBoxId}
-                   aria-expanded={showSuggestion}
-                   aria-activedescendant={showSuggestion && activeIndex >= 0 ? `${listBoxId}__${suggestions[activeIndex].id ?? 'global'}-${suggestions[activeIndex].name}` : undefined}
-            />
-            {showSuggestion && (
-                <ul id={listBoxId} role="listbox"
-                    className="menu bg-base-100 rounded-box shadow-lg mt-2 max-h-60 overflow-auto">
-                    {suggestions.map((suggestion, index) => {
-                        const key = `${suggestion.id ?? 'global'}-${suggestion.name}`;
-                        const isActive = index === activeIndex;
-                        return (
-                            <li key={key} id={`${listBoxId}__${key}`} role="option" aria-selected={isActive}>
-                                <button type="button"
-                                        className={clsx("w-full text-left px-3 py-2", {'bg-base-200': isActive})}
-                                        onMouseEnter={() => setActiveIndex(index)}
-                                        onMouseDown={(e) => e.preventDefault()}
-                                        onClick={() => {
-                                            setTaskName(suggestion.name);
-                                            setIsFocused(false);
-                                            handleSubmit(suggestion.name)
-                                        }}
-                                        title={suggestion.name}>
-                                    {suggestion.name}
-                                </button>
-                            </li>
-                        );
-                    })}
-                </ul>
-            )}
+            <div className="relative group">
+                <input type="text"
+                       placeholder="Type what you did"
+                       onChange={(e) => setTaskName(e.target.value)}
+                       onKeyDown={handleKeydown}
+                       onFocus={() => setIsFocused(true)}
+                       onBlur={() => setTimeout(() => setIsFocused(false), 300)}
+                       value={taskName}
+                       className={clsx(
+                           "input input-bordered w-full outline-none",
+                           {'rounded-b-none border-b-0': showSuggestion})
+                       }
+                       role="combobox"
+                       aria-autocomplete="list"
+                       aria-controls={listBoxId}
+                       aria-expanded={showSuggestion}
+                       aria-activedescendant={showSuggestion && activeIndex >= 0 ? `${listBoxId}__${suggestions[activeIndex].id ?? 'global'}-${suggestions[activeIndex].name}` : undefined}
+                />
+                {showSuggestion && (
+                    <ul id={listBoxId} role="listbox"
+                        className="absolute z-20 top-full left-0 w-full bg-base-100 border border-t-0 rounded-b-xl shadow-xl max-h-64 overflow-auto"
+                    >
+                        {isFetching && (
+                            <li className="px-3 py-2 text-sm text-base-content/70">Searching…</li>
+                        )}
+                        {suggestions.map((suggestion, index) => {
+                            const key = `${suggestion.id ?? 'global'}-${suggestion.name}`;
+                            const isActive = index === activeIndex;
+                            return (
+                                <li key={key} id={`${listBoxId}__${key}`} role="option" aria-selected={isActive}>
+                                    <button type="button"
+                                            className={clsx("w-full text-left px-3 py-2 hover:bg-base-200", {'bg-base-200': isActive})}
+                                            onMouseEnter={() => setActiveIndex(index)}
+                                            onMouseDown={(e) => e.preventDefault()}
+                                            onClick={() => {
+                                                setTaskName(suggestion.name);
+                                                setIsFocused(false);
+                                                handleSubmit(suggestion.name)
+                                            }}
+                                            title={suggestion.name}>
+                                        {suggestion.name}
+                                    </button>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                )}
+            </div>
         </fieldset>
     )
 }
