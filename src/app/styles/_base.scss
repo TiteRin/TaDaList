@@ -1,0 +1,5 @@
+/* Minimal base tweaks (rely on Tailwind for resets) */
+
+html, body {
+  text-rendering: optimizeLegibility;
+}

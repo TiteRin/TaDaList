@@ -1,6 +1,6 @@
 import type {Preview} from '@storybook/nextjs-vite'
 import '@/app/globals.css';
-import '@/app/styles/animations.scss';
+import '@/app/styles/main.scss';
 import {initialize, mswLoader} from "msw-storybook-addon";
 
 initialize();

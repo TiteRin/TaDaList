@@ -1,0 +1,8 @@
+/* Global SCSS entry point – orchestration only */
+/* Keep Tailwind/DaisyUI directives in src/app/globals.css */
+
+@use "./variables";
+@use "./mixins";
+@use "./base";
+@use "./utilities";
+@use "./animations";
