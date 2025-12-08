@@ -47,7 +47,7 @@ export const WithSuggestions: Story = {
                         {id: "task-4", name: "shoveled snow", source: "user"},
                         {id: "task-7", name: "showed some work", source: "user"},
                         {id: "task-11", name: "shipped gifts", source: "user"},
-                        {id: "task-12", name: "share insights with my therapist", source: "user"},
+                        {id: "task-12", name: "shared insights with my therapist", source: "user"},
                     ]);
                 }),
                 http.post('/api/tasks/done', () => {
