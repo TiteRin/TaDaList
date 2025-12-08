@@ -27,3 +27,7 @@ export function parseScript(script: RawStep[]): Step[] {
         return step as Step;
     });
 };
+
+export function randomDelay(min: number, max: number) {
+    return Math.random() * (max - min) + min;
+}

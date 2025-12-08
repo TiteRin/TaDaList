@@ -1,5 +1,5 @@
 import {describe, expect, test} from "vitest";
-import {parseScript, Step} from "@/app/components/placeholder-animation/core/parseScript";
+import {parseScript, Step, randomDelay} from "@/app/components/placeholder-animation/utils";
 
 describe("parseScript", function () {
     test("string -> type step", () => {
@@ -21,5 +21,14 @@ describe("parseScript", function () {
         const step = {type: "type", target: "hello"};
         const steps = parseScript([step as Step]);
         expect(steps[0]).toEqual(step);
+    })
+});
+
+
+describe("randomDelay", () => {
+    test("returns number within range", () => {
+        const d = randomDelay(10, 20);
+        expect(d).toBeGreaterThan(10);
+        expect(d).toBeLessThan(20);
     })
 });
