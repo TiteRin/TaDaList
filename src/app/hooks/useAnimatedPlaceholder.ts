@@ -40,7 +40,7 @@ export function useAnimatedPlaceholder(rawScripts: RawStep[][] = defaultRawScrip
     const [cursor, setCursor] = useState<string>("");
     const abortRef = useRef(false);
 
-    const abort = () => false;
+    const abort = () => abortRef.current;
 
     useEffect(() => {
 
@@ -100,6 +100,10 @@ export function useAnimatedPlaceholder(rawScripts: RawStep[][] = defaultRawScrip
     return {
         placeholder: `${placeholder}${cursor}`,
         showCursor,
-        stop: () => abortRef.current = true
+        stop: () => {
+            setPlaceholder("");
+            setShowCursor(false);
+            abortRef.current = true
+        }
     }
 }

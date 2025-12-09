@@ -2,7 +2,7 @@
 
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {logTask, LogTaskPayload, suggestTasks} from "@/lib/api/tasks";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {clsx} from "clsx";
 import {useDebounced} from "@/app/hooks/useDebounced";
 import {useAnimatedPlaceholder} from "@/app/hooks/useAnimatedPlaceholder";
@@ -25,6 +25,7 @@ export default function TaskInput(
     const [activeIndex, setActiveIndex] = useState<number>(-1);
     const listBoxId = "task-suggestions";
 
+
     const {data: suggestions = [], isFetching} = useQuery({
         queryKey: ["suggestions", debouncedTaskName],
         queryFn: () => suggestTasks(debouncedTaskName),
@@ -40,6 +41,10 @@ export default function TaskInput(
             queryClient.invalidateQueries({queryKey: ["suggestions"]})
         }
     });
+
+    useEffect(() => {
+        if (isFocused) stop();
+    }, [isFocused, stop]);
 
     const showSuggestion = isFocused && (debouncedTaskName ?? taskName).length > 0 && suggestions.length > 0;
 
