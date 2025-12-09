@@ -44,14 +44,18 @@ export function useAnimatedPlaceholder(rawScripts: RawStep[][] = defaultRawScrip
 
     useEffect(() => {
 
-        if (!showCursor) {
-            (() => setCursor(""))();
-            return;
-        }
-
-        const intervalId = setInterval(() => { setCursor(cursor === "|" ? "" : "|") }, 100);
+        const intervalId = setInterval(() => {
+            setCursor((prevState) => {
+                if (!showCursor) {
+                    return "";
+                }
+                if (prevState === "|") return "";
+                if (prevState === "") return "|";
+                return prevState;
+            });
+        }, 300);
         return () => clearInterval(intervalId);
-    }, [showCursor])
+    }, [showCursor, setCursor]);
 
     useEffect(() => {
         const rawScript = rawScripts[Math.floor(Math.random() * rawScripts.length)];
@@ -75,11 +79,9 @@ export function useAnimatedPlaceholder(rawScripts: RawStep[][] = defaultRawScrip
 
                 switch (step.type) {
                     case "type":
-                        setShowCursor(true);
                         await typeText(step.target, get, set, abort);
                         break;
                     case "deleteTo":
-                        setShowCursor(false);
                         await deleteTo(step.target, get, set, abort);
                         break;
                     case "wait":
@@ -87,6 +89,8 @@ export function useAnimatedPlaceholder(rawScripts: RawStep[][] = defaultRawScrip
                         await wait(step.delay);
                         break;
                 }
+
+                setShowCursor(true);
             }
         }
 
