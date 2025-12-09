@@ -34,19 +34,23 @@ export function randomDelay(min: number, max: number) {
     return Math.random() * (max - min) + min;
 }
 
-async function wait(delay: number) {
+export async function wait(delay: number) {
     return new Promise(resolve => setTimeout(resolve, delay));
 }
 
 export async function typeText(
     target: string,
+    get: () => string,
     set: (t: string) => void,
     abort: () => boolean, speedRange
     : SpeedRange = {
         min: 40,
         max: 120
     }) {
-    for (let i = 0; i < target.length; i++) {
+
+    if (get().length >= target.length) return;
+
+    for (let i = get().length; i < target.length; i++) {
         if (abort()) return;
         set(target.slice(0, i + 1));
         await wait(randomDelay(speedRange.min, speedRange.max));

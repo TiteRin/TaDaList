@@ -26,9 +26,12 @@ const meta: Meta<typeof TaskInput> = {
 
 export default meta;
 type Story = StoryObj<typeof TaskInput>;
-export const Default: Story = {};
+export const Default: Story = {
+    args: {}
+};
 
 export const WithSuggestions: Story = {
+    args: {},
     parameters: {
         msw: {
             handlers: [
@@ -58,9 +61,27 @@ export const WithSuggestions: Story = {
     },
     play: async ({canvasElement}) => {
         const canvas = within(canvasElement);
-        const input = canvas.getByPlaceholderText(/type what you did/i);
+        const input = canvas.getByTestId("task-input");
 
         await userEvent.click(input);
         await userEvent.type(input, "sh");
     }
 };
+
+export const WithAnimatedPlaceholder: Story = {
+    args: {
+        animatedPlaceholderScripts: [
+            [
+                "ate",
+                { wait: 1000 },
+                "ate something",
+                { wait: 1000 },
+                "ate something healthy",
+                { wait: 500 },
+                { deleteTo: "ate "},
+                { wait: 500 },
+                "ate an apple"
+            ]
+        ]
+    }
+}

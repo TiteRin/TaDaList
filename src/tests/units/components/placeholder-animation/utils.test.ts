@@ -1,5 +1,5 @@
-import {describe, expect, test} from "vitest";
-import {parseScript, Step, randomDelay, typeText, deleteTo} from "@/app/components/placeholder-animation/utils";
+import {beforeEach, describe, expect, test} from "vitest";
+import {parseScript, Step, randomDelay, typeText, deleteTo} from "@/app/hooks/placeholder-animation/utils";
 
 describe("parseScript", function () {
     test("string -> type step", () => {
@@ -35,40 +35,36 @@ describe("randomDelay", () => {
 
 describe("typeText", () => {
 
-    test("types step by step", async () => {
-        let text = "";
-        const set = (t: string) => (text = t);
+    let text = "";
+    const set = (target: string) => text = target;
+    const get = () => text;
 
-        await typeText("hello", set, () => false, { min: 1, max: 1});
+    beforeEach(() => {
+        text = "";
+    })
+
+    test("types step by step", async () => {
+        await typeText("hello", get, set, () => false, {min: 1, max: 1});
         expect(text).toBe("hello");
     });
 
     test("deleteTo, step by step", async () => {
-       let text = "hello";
-       const set = (t: string) => (text = t);
-       const get = () => text;
+        text = "hello";
 
-       await deleteTo("he", get, set, () => false, { min: 1, max: 1});
-       expect(text).toBe("he");
+        await deleteTo("he", get, set, () => false, {min: 1, max: 1});
+        expect(text).toBe("he");
     });
 
     test("cannot deleteTo if target is not contained in text", async () => {
-        let text = "hello";
-        const set = (t: string) => (text = t);
-        const get = () => text;
+        text = "hello";
 
-
-        expect(() => deleteTo("hi", get, set, () => false, { min: 1, max: 1})).rejects.toThrowError();
+        expect(() => deleteTo("hi", get, set, () => false, {min: 1, max: 1})).rejects.toThrowError();
     });
 
     test("stops when aborted", async () => {
-        let text = "";
-        const set = (t: string) => (text = t);
-
         const abort = () => true;
 
-        const p = typeText("hello", set, abort, { min: 1, max: 1 });
-
+        const p = typeText("hello", get, set, abort, {min: 1, max: 1});
         await p;
 
         expect(text).toBe(""); // nothing typed

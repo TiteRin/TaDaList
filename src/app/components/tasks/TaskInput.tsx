@@ -5,9 +5,18 @@ import {logTask, LogTaskPayload, suggestTasks} from "@/lib/api/tasks";
 import {useState} from "react";
 import {clsx} from "clsx";
 import {useDebounced} from "@/app/hooks/useDebounced";
+import {useAnimatedPlaceholder} from "@/app/hooks/useAnimatedPlaceholder";
+import {RawStep} from "@/app/hooks/placeholder-animation/utils";
 
-export default function TaskInput() {
+interface Props {
+    animatedPlaceholderScripts?: RawStep[][];
+}
 
+export default function TaskInput(
+    {animatedPlaceholderScripts}: Props = {animatedPlaceholderScripts: undefined}
+) {
+
+    const {placeholder, stop} = useAnimatedPlaceholder(animatedPlaceholderScripts);
     const [taskName, setTaskName] = useState("");
     const [isFocused, setIsFocused] = useState(false);
     const queryClient = useQueryClient();
@@ -71,7 +80,7 @@ export default function TaskInput() {
             <legend className={"fieldset-legend"}>What did you do today?</legend>
             <div className="relative group">
                 <input type="text"
-                       placeholder="Type what you did"
+                       placeholder={placeholder}
                        onChange={(e) => setTaskName(e.target.value)}
                        onKeyDown={handleKeydown}
                        onFocus={() => setIsFocused(true)}
@@ -82,6 +91,7 @@ export default function TaskInput() {
                            {'rounded-b-none border-b-0': showSuggestion})
                        }
                        role="combobox"
+                       data-testid="task-input"
                        aria-autocomplete="list"
                        aria-controls={listBoxId}
                        aria-expanded={showSuggestion}
