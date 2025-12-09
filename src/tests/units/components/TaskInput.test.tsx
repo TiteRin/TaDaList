@@ -3,7 +3,6 @@ import {describe, it, expect, vi, beforeEach} from "vitest";
 import TaskInput from '@/app/components/tasks/TaskInput';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import * as api from '@/lib/api/tasks';
-import {logTask, suggestTasks} from "@/lib/api/tasks";
 import React from "react";
 
 vi.mock('@/lib/api/tasks', () => ({
@@ -42,7 +41,7 @@ describe("TaskInput Component", () => {
         renderWithClient(<TaskInput/>);
 
         // Assert
-        expect(screen.getByPlaceholderText(/type what you did/i)).toBeInTheDocument();
+        expect(screen.getByTestId('task-input')).toBeInTheDocument();
     });
 
     it('appelle suggestTasks quand on tape', async () => {
@@ -55,7 +54,7 @@ describe("TaskInput Component", () => {
 
         // Action
         renderWithClient(<TaskInput/>);
-        const input = screen.getByPlaceholderText(/type what you did/i);
+        const input = screen.getByTestId('task-input');
 
         fireEvent.focus(input);
         fireEvent.change(input, {target: {value: "sho"}});
@@ -80,7 +79,7 @@ describe("TaskInput Component", () => {
 
         // Action
         renderWithClient(<TaskInput/>);
-        const input = screen.getByPlaceholderText(/type what you did/i);
+        const input = screen.getByTestId('task-input');
 
         fireEvent.change(input, {target: {value: "ate a fancy meal"}});
         fireEvent.keyDown(input, {key: "Enter", code: "Enter"});
@@ -107,7 +106,7 @@ describe("TaskInput Component", () => {
         );
 
         renderWithClient(<TaskInput/>);
-        const input = screen.getByPlaceholderText(/type what you did/i);
+        const input = screen.getByTestId('task-input');
 
         // Action
         fireEvent.focus(input);
