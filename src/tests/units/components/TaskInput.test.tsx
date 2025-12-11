@@ -25,10 +25,6 @@ function renderWithClient(ui: React.ReactElement) {
     );
 }
 
-it("example test", () => {
-    expect(1).toBe(1);
-});
-
 describe("TaskInput Component", () => {
     beforeEach(() => {
         vi.clearAllMocks();
